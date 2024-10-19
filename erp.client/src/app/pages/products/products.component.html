@@ -1,0 +1,110 @@
+<div class="right_col" role="main" style="min-height: 99vh;">
+    <div class="x_panel">
+        <div class="x_title">
+            <button class="btn btn-warning" (click)="openCreateFormModal()"><i class="fa fa-plus"></i> Create</button>
+            <div class="clearfix"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <ag-grid-angular #productsGrid class="ag-theme-quartz ag-theme-acmecorp"
+                    style="height: 80vh; width: 100%;" [rowData]="products" [columnDefs]="colDefs"
+                    [pagination]="pagination" [defaultColDef]="defaultColDef" [enableCellTextSelection]="true"
+                    [components]="frameworkComponents" [paginationPageSize]="10"
+                    [paginationPageSizeSelector]="paginationPageSizeSelector" (gridReady)="onGridReady($event)">
+                </ag-grid-angular>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="productFormModal" tabindex="-1" product="dialog" aria-labelledby="productFormModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" product="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ product.p_id ? 'Update Product' : 'Create Product' }}</h5>
+            </div>
+            <div class="modal-body">
+                <form #userForm="ngForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="p_name">Name</label>
+                                        <input type="text" id="p_name" class="form-control" [(ngModel)]="product.p_name"
+                                            name="p_name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="p_short_name">Short Name</label>
+                                        <input type="text" id="p_short_name" class="form-control" [(ngModel)]="product.p_short_name" name="p_short_name" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="p_description">Description</label>
+                                        <textarea type="text" id="p_description" class="form-control"
+                                            [(ngModel)]="product.p_description" name="p_description" required
+                                            rows="10"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="p_category">Categroy</label>
+                                        <select appSelect2 #p_category id="p_category" class="form-control"
+                                            [(ngModel)]="product.p_category" name="p_category" required
+                                            (selectionChanged)="onCategoryChange($event);">
+                                            <option *ngFor="let ct of categories" [value]="ct.ct_id">{{ ct.ct_name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="p_sub_category">Sub Category</label>
+                                        <select appSelect2 #p_sub_category id="p_sub_category" class="form-control"
+                                            [(ngModel)]="product.p_sub_category" name="p_sub_category" required
+                                            (selectionChanged)="onSubCategoryChange($event);">
+                                            <option *ngFor="let sc of subcategories" [value]="sc.md_id">{{ sc.md_name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="p_division">Division</label>
+                                        <select appSelect2 #p_division id="p_division" class="form-control"
+                                            [(ngModel)]="product.p_division" name="p_division" required
+                                            (selectionChanged)="onDivisionChange($event);">
+                                            <option *ngFor="let dv of divisions" [value]="dv.md_id">{{ dv.md_name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="p_sub_division">Sub Division</label>
+                                        <select appSelect2 #p_sub_division id="p_sub_division" class="form-control"
+                                            [(ngModel)]="product.p_sub_division" name="p_sub_division" required
+                                            (selectionChanged)="onSubDivisionChange($event);">
+                                            <option *ngFor="let sd of subdivisions" [value]="sd.md_id">{{ sd.md_name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary" (click)="createOrUpdateProduct()">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

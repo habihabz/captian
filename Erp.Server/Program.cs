@@ -98,6 +98,7 @@ builder.Services.AddTransient<IExpense, ExpenseRepository>();
 builder.Services.AddTransient<IIncome, IncomeRepository>();
 builder.Services.AddTransient<ICategory, CategoryRepository>();
 builder.Services.AddTransient<IMasterData, MasterDataRepository>();
+builder.Services.AddTransient<IProduct, ProductRepository>();
 
 var app = builder.Build();
 

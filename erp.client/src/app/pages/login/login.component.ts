@@ -13,14 +13,16 @@ import { UserCredential } from '../../models/usercredential.model';
 export class LoginComponent implements OnInit {
   user: User = new User();
   credential: UserCredential = new UserCredential();
-
+  currentYear: number=new Date().getFullYear();
   constructor(
     private http: HttpClient, 
     private router: Router,
     private iloginService: ILoginService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.currentYear = new Date().getFullYear();
+  }
 
   onLogin(): void {
     this.iloginService.getLogin(this.credential).subscribe({

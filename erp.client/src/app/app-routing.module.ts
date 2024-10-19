@@ -8,15 +8,13 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { UsersComponent } from './pages/users/users.component';
 import { RoleComponent } from './pages/role/role.component';
 import { MenuComponent } from './pages/menu/menu.component';
-import { PurchaseOrderComponent } from './pages/purchase.order/purchase.order.component';
 import { MenuAllocationComponent } from './pages/menu.allocation/menu.allocation.component';
 import { SupplierComponent } from './pages/supplier/supplier.component';
 import { CustomerComponent } from './pages/customer/customer.component';
 import { CategoryComponent } from './pages/category/category.component';
 import { IncomeComponent } from './pages/income/income.component';
-import { ExpenseComponent } from './pages/expense/expense.component';
 import { MasterDataComponent } from './pages/master-data/master-data.component';
-import { ExpenseReportComponent } from './pages/expense-report/expense-report.component';
+import { ProductsComponent } from './pages/products/products.component';
 
 
 const routes: Routes = [
@@ -49,10 +47,6 @@ const routes: Routes = [
         component : RoleComponent
       },
       {
-        path: 'purchaseOrder',
-        component : PurchaseOrderComponent
-      },
-      {
         path: 'menus',
         component : MenuComponent
       },
@@ -77,18 +71,15 @@ const routes: Routes = [
         component : IncomeComponent
       },
       {
-        path : 'expenses',
-        component : ExpenseComponent
-      },
-      {
         path :'master-data',
         component :MasterDataComponent
-      }
-      ,
+      },
       {
-        path :'expense-report',
-        component :ExpenseReportComponent
+        path :'products',
+        component :ProductsComponent
+
       }
+      
     ]
   }
 ];

@@ -20,6 +20,7 @@ namespace Erp.Server.Models
         public DbSet<Category> Categories { get; set; }
         public DbSet<MasterData> MasterDatas { get; set; }
         public DbSet<MasterType> MasterTypes { get; set; }
+        public DbSet<Product> Products { get; set; }
 
 
     }

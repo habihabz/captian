@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
-import { Category } from '../../models/category.model'; // Import category model
 import { IuserService } from '../../services/iuser.service';
 import { DbResult } from '../../models/dbresult.model';
 import { User } from '../../models/user.model';
 import { Router } from '@angular/router';
 import { ICategoryService } from '../../services/icategory.service';
+import { Category } from '../../models/category.model';
 
 declare var $: any;
 

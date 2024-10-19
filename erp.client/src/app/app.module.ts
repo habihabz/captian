@@ -1,7 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { JwtModule, JwtModuleOptions } from '@auth0/angular-jwt'; // Ensure correct import
 import { AppComponent } from './app.component';
@@ -19,18 +20,23 @@ import { AuthInterceptor } from './services/auth.interceptor';
 import { environment } from '../environments/environment';
 import { MenuComponent } from './pages/menu/menu.component';
 import { MenuAllocationComponent } from './pages/menu.allocation/menu.allocation.component';
-import { PurchaseOrderComponent } from './pages/purchase.order/purchase.order.component';
 import { Select2Directive } from './directives/select2.directive';
 import { DataTablesModule} from 'angular-datatables';
 import { CustomerComponent } from './pages/customer/customer.component';
 import { SupplierComponent } from './pages/supplier/supplier.component';
 import { CategoryComponent } from './pages/category/category.component';
-import { ExpenseComponent } from './pages/expense/expense.component';
 import { IncomeComponent } from './pages/income/income.component'
 import { MasterDataComponent } from './pages/master-data/master-data.component';
 import { AgGridModule } from 'ag-grid-angular'; 
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { ExpenseReportComponent } from './pages/expense-report/expense-report.component';
+import { ProductsComponent } from './pages/products/products.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatNativeDateModule } from '@angular/material/core';
+
 
 // Define a function to get the token
 export function tokenGetter() {
@@ -60,26 +66,32 @@ const jwtConfig: JwtModuleOptions = {
     UsersComponent,
     RoleComponent,
     MenuComponent,
-    PurchaseOrderComponent,
     MenuAllocationComponent,
     Select2Directive,
     CustomerComponent,
     SupplierComponent,
     CategoryComponent,
-    ExpenseComponent,
     IncomeComponent,
     MasterDataComponent,
-    ExpenseReportComponent
+    ProductsComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule ,
     HttpClientModule,
     FormsModule,
     AppRoutingModule,
     JwtModule.forRoot(jwtConfig), 
     DataTablesModule,
     AgGridModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatIconModule,
+    MatNativeDateModule,
+    ReactiveFormsModule  
   ],
   providers: [
     {
