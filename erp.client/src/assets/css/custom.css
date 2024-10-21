@@ -1280,7 +1280,6 @@ a:hover, a:focus {
 
 .top_nav .navbar-right li {
   display: inline-block;
-  float: right;
   position: static; }
 
 @media (min-width: 480px) {
@@ -1659,7 +1658,6 @@ h2 {
   border: 1px solid #E6E9ED;
   -webkit-column-break-inside: avoid;
   -moz-column-break-inside: avoid;
-  column-break-inside: avoid;
   opacity: 1;
   -webkit-transition: all .2s ease;
   transition: all .2s ease; }
@@ -2022,8 +2020,6 @@ td.details {
 
 .paging_full_numbers a.paginate_button, .paging_full_numbers a.paginate_active {
   border: 1px solid #aaa;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
   padding: 2px 5px;
   margin: 0 3px;
   cursor: pointer; }
@@ -2117,7 +2113,6 @@ ul.msg_list li a .message {
   background: #fff;
   margin-top: 0;
   border: 1px solid #D9DEE4;
-  -webkit-box-shadow: none;
   right: 0;
   left: auto;
   width: 220px; }
@@ -2193,7 +2188,6 @@ ul.quick-list li i {
   border: 1px solid #abd9ea;
   border-radius: 5px;
   text-align: center;
-  float: right;
   padding: 2px;
   margin-top: 10px; }
 
@@ -2276,8 +2270,7 @@ span.right {
   position: relative; }
 
 @media (min-width: 992px) {
-  footer {
-    margin-left: 230px; } }
+ }
 
 @media (min-width: 992px) {
   .tile_count .tile_stats_count {
@@ -2827,9 +2820,7 @@ input.parsley-error, textarea.parsley-error, select.parsley-error {
   -webkit-box-shadow: 0 0 4px -2px #CE5454;
           box-shadow: 0 0 4px -2px #CE5454;
   position: relative;
-  left: 0;
-  -moz-animation: .7s 1 shake linear;
-  -webkit-animation: 0.7s 1 shake linear; }
+  left: 0; }
 
 .item {
   display: -webkit-box;
@@ -3082,8 +3073,6 @@ textarea:focus {
   overflow-y: auto; }
 
 span.tag {
-  -moz-border-radius: 2px;
-  -webkit-border-radius: 2px;
   display: block;
   float: left;
   padding: 5px 9px;
@@ -3519,7 +3508,6 @@ ul.messages li, .tasks li {
 ul.messages li img.avatar, img.avatar {
   height: 32px;
   width: 32px;
-  float: left;
   display: inline-block;
   border-radius: 2px;
   padding: 2px;

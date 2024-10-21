@@ -15,11 +15,23 @@ import { CategoryComponent } from './pages/category/category.component';
 import { IncomeComponent } from './pages/income/income.component';
 import { MasterDataComponent } from './pages/master-data/master-data.component';
 import { ProductsComponent } from './pages/products/products.component';
+import { SitelayoutComponent } from './pages/website/sitelayout/sitelayout.component';
+import { WebHomeComponent } from './pages/website/web.home/web.home.component';
+
 
 
 const routes: Routes = [
   // Redirect empty path to login
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'web-home', pathMatch: 'full' },
+  {  
+    path: '',
+    component: SitelayoutComponent,
+    children: [
+      {
+        path: 'web-home',
+        component: WebHomeComponent
+      }]
+  },
   // Define your login route
   {  
     path: 'login',

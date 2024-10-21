@@ -36,6 +36,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatNativeDateModule } from '@angular/material/core';
+import { SitelayoutComponent } from './pages/website/sitelayout/sitelayout.component';
+import { WebsiteTopComponent } from './pages/website/sitelayout/website-top/website-top.component';
+import { WebsiteFooterComponent } from './pages/website/sitelayout/website-footer/website-footer.component';
+import { WebHomeComponent } from './pages/website/web.home/web.home.component';
 
 
 // Define a function to get the token
@@ -73,7 +77,11 @@ const jwtConfig: JwtModuleOptions = {
     CategoryComponent,
     IncomeComponent,
     MasterDataComponent,
-    ProductsComponent
+    ProductsComponent,
+    SitelayoutComponent,
+    WebsiteTopComponent,
+    WebsiteFooterComponent,
+    WebHomeComponent
   ],
   imports: [
     BrowserModule,

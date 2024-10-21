@@ -8,7 +8,7 @@ import { ICustomerService } from '../../services/icustomer.service';
 import { SnackBarService } from '../../services/isnackbar.service';
 import { User } from '../../models/user.model';
 import { Subscription } from 'rxjs/internal/Subscription';
-import { ColDef, GridReadyEvent } from 'ag-grid-community';
+import { ColDef, DomLayoutType, GridReadyEvent } from 'ag-grid-community';
 import { ActionRendererComponent } from '../../directives/action.renderer';
 import { IProductService } from '../../services/iproduct.service';
 import { Product } from '../../models/product.model';
@@ -29,8 +29,11 @@ declare var $: any;
 })
 export class ProductsComponent implements OnInit {
   pagination = true;
-  paginationPageSize = 15;
-  paginationPageSizeSelector = [15, 30, 50, 100];
+  paginationPageSize5 = 5;
+  paginationPageSizeSelector5 = [5, 10,20, 50, 100];
+  paginationPageSize10 = 10;
+  paginationPageSizeSelector10 = [10, 20, 50, 100];
+  domLayout: DomLayoutType = 'autoHeight';
   currentUser: User = new User();
   subscription: Subscription = new Subscription();
   products: Product[] = [];
@@ -41,6 +44,8 @@ export class ProductsComponent implements OnInit {
   divisions: MasterData[] = [];
   subdivisions: MasterData[] = [];
   requestParms: RequestParms = new RequestParms();
+  newBarcode:string ='';
+  
 
   @ViewChild('productsGrid') productsGrid!: AgGridAngular;
 
@@ -73,12 +78,10 @@ export class ProductsComponent implements OnInit {
     { headerName: "Sub Category", field: "p_sub_category_name" },
     { headerName: "Division", field: "p_division_name" },
     { headerName: "Sub Division", field: "p_sub_division_name" },
-    { headerName: "Created By", field: "p_cre_by_name" },
-    { headerName: "Created Date", field: "p_cre_date" },
     {
-      headerName: 'Variant', cellRenderer: 'actionRenderer', cellRendererParams:
+      headerName: 'Details', cellRenderer: 'actionRenderer', cellRendererParams:
       {
-        name: 'Variant', action: 'getVariants', cssClass: 'btn btn-warning', icon: 'fa fa-list', getVariant: (data: any) => this.onAction('variant', data)
+        name: 'Details', action: 'onDetail', cssClass: 'btn btn-warning', icon: 'fa fa-list', onDetails: (data: any) => this.onAction('detail', data)
       },
     },
     {
@@ -92,7 +95,9 @@ export class ProductsComponent implements OnInit {
       {
         name: 'Delete', action: 'onDelete', cssClass: 'btn btn-danger', icon: 'fa fa-trash', onDelete: (data: any) => this.onAction('delete', data)
       },
-    }
+    },  
+    { headerName: "Created By", field: "p_cre_by_name" },
+    { headerName: "Created Date", field: "p_cre_date" },
   ];
 
   frameworkComponents = {
@@ -150,8 +155,8 @@ export class ProductsComponent implements OnInit {
       case 'delete':
         this.onDelete(data);
         break;
-      case 'variant':
-        this.getVariant(data);
+      case 'detail':
+        this.onDetail(data);
         break;
      
       default:
@@ -178,8 +183,8 @@ export class ProductsComponent implements OnInit {
       (result: DbResult) => {
         if (result.message === "Success") {
           this.products = this.products.filter(p => p.p_id !== data.p_id);
+          this.snackBarService.showError("Successfully Removed");
 
-          this.snackBarService.showError("Successfully Removed");;
         } else {
           alert(result.message);
         }
@@ -190,7 +195,7 @@ export class ProductsComponent implements OnInit {
     );
   }
 
-  getVariant(data: any){
+  onDetail(data: any){
 
   }
   
@@ -199,6 +204,7 @@ export class ProductsComponent implements OnInit {
     this.iproductService.getProducts().subscribe(
       (data: Product[]) => {
         this.products = data;
+        this.igridService.resizeGridColumns(this.productsGrid.api);
       },
       (error: any) => {
       }
@@ -242,5 +248,7 @@ export class ProductsComponent implements OnInit {
     $("#p_sub_division").val(this.product.p_sub_division).trigger('change');
 
   }
+  addBarcode(){
 
+  }
 }
