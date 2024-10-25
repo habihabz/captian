@@ -17,6 +17,7 @@ import { MasterDataComponent } from './pages/master-data/master-data.component';
 import { ProductsComponent } from './pages/products/products.component';
 import { SitelayoutComponent } from './pages/website/sitelayout/sitelayout.component';
 import { WebHomeComponent } from './pages/website/web.home/web.home.component';
+import { SingleProductComponent } from './pages/website/single-product/single-product.component';
 
 
 
@@ -30,7 +31,12 @@ const routes: Routes = [
       {
         path: 'web-home',
         component: WebHomeComponent
-      }]
+      },
+      {
+        path: 'single-product',
+        component: SingleProductComponent
+      }
+    ]
   },
   // Define your login route
   {  

@@ -40,6 +40,10 @@ import { SitelayoutComponent } from './pages/website/sitelayout/sitelayout.compo
 import { WebsiteTopComponent } from './pages/website/sitelayout/website-top/website-top.component';
 import { WebsiteFooterComponent } from './pages/website/sitelayout/website-footer/website-footer.component';
 import { WebHomeComponent } from './pages/website/web.home/web.home.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatTableModule } from '@angular/material/table';
+import { SingleProductComponent } from './pages/website/single-product/single-product.component';
 
 
 // Define a function to get the token
@@ -81,7 +85,8 @@ const jwtConfig: JwtModuleOptions = {
     SitelayoutComponent,
     WebsiteTopComponent,
     WebsiteFooterComponent,
-    WebHomeComponent
+    WebHomeComponent,
+    SingleProductComponent
   ],
   imports: [
     BrowserModule,
@@ -99,7 +104,10 @@ const jwtConfig: JwtModuleOptions = {
     MatButtonModule,
     MatIconModule,
     MatNativeDateModule,
-    ReactiveFormsModule  
+    ReactiveFormsModule,
+    MatSidenavModule  ,
+    MatTabsModule,
+    MatTableModule,
   ],
   providers: [
     {

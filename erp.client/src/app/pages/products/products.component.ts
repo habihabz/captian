@@ -18,6 +18,10 @@ import { Category } from '../../models/category.model';
 import { DbResult } from '../../models/dbresult.model';
 import { MasterData } from '../../models/master.data.model';
 import { RequestParms } from '../../models/requestParms';
+import { ProdSize } from '../../models/prod.size.model';
+import { ProductColor } from '../../models/prod.color.model';
+import { Barcode } from '../../models/barcode.model';
+import { ProdAttachement } from '../../models/prod.attachments.model';
 
 
 declare var $: any;
@@ -30,7 +34,7 @@ declare var $: any;
 export class ProductsComponent implements OnInit {
   pagination = true;
   paginationPageSize5 = 5;
-  paginationPageSizeSelector5 = [5, 10,20, 50, 100];
+  paginationPageSizeSelector5 = [5, 10, 20, 50, 100];
   paginationPageSize10 = 10;
   paginationPageSizeSelector10 = [10, 20, 50, 100];
   domLayout: DomLayoutType = 'autoHeight';
@@ -43,11 +47,27 @@ export class ProductsComponent implements OnInit {
   subcategories: MasterData[] = [];
   divisions: MasterData[] = [];
   subdivisions: MasterData[] = [];
+  sizes:MasterData[]=[];
   requestParms: RequestParms = new RequestParms();
-  newBarcode:string ='';
-  
+  newBarcode: string = '';
+  prodSize: ProdSize = new ProdSize();
+  prodSizes: ProdSize[] = [];
+  prodColor: ProductColor = new ProductColor();
+  prodColors: ProductColor[] = [];
+  barcode: Barcode = new Barcode();
+  barcodes: Barcode[] = [];
+  prodAttachement: ProdAttachement = new ProdAttachement();
+  prodAttachements: ProdAttachement[] = [];
+  imagePreviews: string[] = [];
+  selectedFiles: File[] = [];
+
 
   @ViewChild('productsGrid') productsGrid!: AgGridAngular;
+  @ViewChild('barcodeGrid') barcodeGrid!: AgGridAngular;
+  @ViewChild('prodSizeGrid') prodSizeGrid!: AgGridAngular;
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('barcodeInput', { static: false }) barcodeInput!: ElementRef;
+
 
   constructor(
     private iuserService: IuserService,
@@ -95,17 +115,40 @@ export class ProductsComponent implements OnInit {
       {
         name: 'Delete', action: 'onDelete', cssClass: 'btn btn-danger', icon: 'fa fa-trash', onDelete: (data: any) => this.onAction('delete', data)
       },
-    },  
+    },
     { headerName: "Created By", field: "p_cre_by_name" },
     { headerName: "Created Date", field: "p_cre_date" },
   ];
+
+  barcodeColDefs: ColDef[] = [
+    { headerName: "Id", field: "b_id" },
+    { headerName: "Barcode", field: "b_bar_code" },
+    {
+      headerName: 'Delete', cellRenderer: 'actionRenderer', cellRendererParams:
+      {
+        name: 'Delete', action: 'onDeleteBarcode', cssClass: 'btn btn-danger', icon: 'fa fa-trash', onDeleteBarcode: (data: any) => this.onAction('deleteBarcode', data)
+      },
+    },
+  ];
+
+  prodSizeColDefs: ColDef[] = [
+    { headerName: "Id", field: "ps_id" },
+    { headerName: "Size", field: "ps_size_name" },
+    {
+      headerName: 'Delete', cellRenderer: 'actionRenderer', cellRendererParams:
+      {
+        name: 'Delete', action: 'onDeleteProdSize', cssClass: 'btn btn-danger', icon: 'fa fa-trash', onDeleteProdSize: (data: any) => this.onAction('deleteProdSize', data)
+      },
+    },
+  ];
+
 
   frameworkComponents = {
     actionRenderer: ActionRendererComponent
   };
 
   defaultColDef = {
-    srrtable: true,
+    sortable: true,
     filter: true
   };
 
@@ -122,6 +165,7 @@ export class ProductsComponent implements OnInit {
     this.getMasterDatasByType("SubCategory", (data) => { this.subcategories = data; });
     this.getMasterDatasByType("Division", (data) => { this.divisions = data; });
     this.getMasterDatasByType("SubDivision", (data) => { this.subdivisions = data; });
+    this.getMasterDatasByType("ProductSize", (data) => { this.sizes = data; });
   }
   loadCategories(): void {
     this.icategoryService.getCategories().subscribe(
@@ -158,7 +202,12 @@ export class ProductsComponent implements OnInit {
       case 'detail':
         this.onDetail(data);
         break;
-     
+      case 'deleteBarcode':
+        this.onDeleteBarcode(data);
+        break;
+      case 'deleteProdSize':
+        this.onDeleteProdSize(data);
+      break;
       default:
         this.snackBarService.showError("Unknown Action " + action);;
     }
@@ -183,7 +232,7 @@ export class ProductsComponent implements OnInit {
       (result: DbResult) => {
         if (result.message === "Success") {
           this.products = this.products.filter(p => p.p_id !== data.p_id);
-          this.snackBarService.showError("Successfully Removed");
+          this.snackBarService.showSuccess("Successfully Removed");
 
         } else {
           alert(result.message);
@@ -195,11 +244,11 @@ export class ProductsComponent implements OnInit {
     );
   }
 
-  onDetail(data: any){
+  onDetail(data: any) {
 
   }
-  
- 
+
+
   getProducts() {
     this.iproductService.getProducts().subscribe(
       (data: Product[]) => {
@@ -212,6 +261,8 @@ export class ProductsComponent implements OnInit {
   }
   onGridReady(event: GridReadyEvent) {
     this.igridService.resizeGridColumns(this.productsGrid.api);
+    this.igridService.resizeGridColumns(this.barcodeGrid.api);
+    this.igridService.resizeGridColumns(this.prodSizeGrid.api);
   }
 
   openCreateFormModal(): void {
@@ -222,7 +273,14 @@ export class ProductsComponent implements OnInit {
   onSubCategoryChange(sc_id: any) { this.product.p_sub_category = sc_id; }
   onDivisionChange(d_id: any) { this.product.p_division = d_id; }
   onSubDivisionChange(sd_id: any) { this.product.p_sub_division = sd_id; }
+  onProdSizeChange(ps_id: number) {
+    const selectedSize = this.sizes.find(size => size.md_id == ps_id);
+    if (selectedSize) {
+      this.prodSize.ps_size = selectedSize.md_id;   
+      this.prodSize.ps_size_name = selectedSize.md_name; 
+    } 
 
+  }
 
   createOrUpdateProduct() {
     this.product.p_cre_by = this.currentUser.u_id; // Update property to match Category model
@@ -248,7 +306,82 @@ export class ProductsComponent implements OnInit {
     $("#p_sub_division").val(this.product.p_sub_division).trigger('change');
 
   }
-  addBarcode(){
+  addBarcode() {
+    if (this.newBarcode != "") {
+      const isDuplicate = this.barcodes.some(barcode => barcode.b_bar_code === this.newBarcode);
+      if (isDuplicate) {
+        this.snackBarService.showError("This barcode is already added.");
+        return;
+      }
+      this.barcode = new Barcode();
+      this.barcode.b_id = this.barcodes.length + 1;
+      this.barcode.b_bar_code = this.newBarcode;
+      this.barcodes.push(this.barcode);
+      this.barcodeGrid.api.applyTransaction({ add: [this.barcode] });
+      this.igridService.resizeGridColumns(this.barcodeGrid.api);
+      this.snackBarService.showSuccess("Successfully Added");
+      this.newBarcode = '';
+      this.barcodeInput.nativeElement.focus();
+
+    } else {
+      this.snackBarService.showError("Please Select Barcode");
+    }
+  }
+  
+  onDeleteBarcode(data: any) {
+    
+    this.barcodes = this.barcodes.filter(barcode => barcode.b_id !== data.b_id);
+    this.barcodeGrid.api.applyTransaction({ remove: [{ b_id: data.b_id }] });
+    this.snackBarService.showSuccess("Barcode successfully Removed");
+  }
+
+  addProdSize() {
+    if (this.prodSize.ps_size != 0) {
+      const isDuplicate = this.prodSizes.some(size => size.ps_size === this.prodSize.ps_size);
+      if (isDuplicate) {
+        this.snackBarService.showError("This size is already added.");
+        return;
+      }
+      this.prodSize.ps_id = this.prodSizes.length + 1;
+      this.prodSizes.push(this.prodSize);
+      this.prodSizeGrid.api.applyTransaction({ add: [this.prodSize] });
+      this.igridService.resizeGridColumns(this.prodSizeGrid.api);
+      this.snackBarService.showSuccess("Successfully Added");
+      this.prodSize = new ProdSize();
+    } else {
+      this.snackBarService.showError("Please Select A Size");
+    }
+  }
+  
+  
+  onDeleteProdSize(data:any){
+    this.prodSizes = this.prodSizes.filter(prodSize => prodSize.ps_id !== data.ps_id);
+    this.prodSizeGrid.api.applyTransaction({ remove: [{ ps_id: data.ps_id }] });
+    this.snackBarService.showSuccess("Size successfully removed");
+  }
+
+  uploadImages() {
 
   }
+  onFileSelect(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files) {
+      this.selectedFiles = Array.from(input.files);
+      this.imagePreviews = [];
+
+      // Generate preview URLs
+      this.selectedFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e: any) => this.imagePreviews.push(e.target.result);
+        reader.readAsDataURL(file);
+      });
+    }
+    this.fileInput.nativeElement.value = '';
+  }
+
+  removeImage(index: number): void {
+    this.imagePreviews.splice(index, 1);
+    this.selectedFiles.splice(index, 1);
+  }
+  
 }

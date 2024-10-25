@@ -13,9 +13,7 @@
 <link rel="stylesheet" href="/assets/css/owl.carousel.min.css">
 <link rel="stylesheet" href="/assets/css/animate.min.css">
 <link rel="stylesheet" href="/assets/css/magnific-popup.css">
-<link rel="stylesheet" href="/assets/css/fontawesome-all.min.css">
 <link rel="stylesheet" href="/assets/css/themify-icons.css">
-<link rel="stylesheet" href="/assets/css/futura-std-font.css">
 <link rel="stylesheet" href="/assets/css/meanmenu.css">
 <link rel="stylesheet" href="/assets/css/swiper-bundle.min.css">
 <link rel="stylesheet" href="/assets/css/slick.css">
@@ -74,13 +72,7 @@
                     <div class="main-menu">
                         <nav id="mobile-menu">
                             <ul>
-                                <li class=""><a href="index.html">Home </a>
-                                    <ul class="sub-menu">
-                                        <li><a href="index.html">home shop 1</a></li>
-                                        <li><a href="index-2.html">home shop 2</a></li>
-                                        <li><a href="index-3.html">home shop 3</a></li>
-                                        <li><a href="index-4.html">home shop 4</a></li>
-                                    </ul>
+                                <li class=""><a href="/web-home">Home </a>
                                 </li>
                                 <li class="position-static "><a href="shop.html">Shop</a>
                                     <ul class="mega_menu" data-background="./assets/img/mega-menu/product.jpg">
@@ -162,7 +154,7 @@
                                     </ul>
                                 </li>
                                 <li><a class="d-none d-xl-block" href="index.html">
-                                        <img class="pl-50 pr-50" src="./assets/img/logo/logo-1.png" alt="">
+                                    <img class="pl-50 pr-50" src="./assets/img/logo/logo_black.png" alt="" style="height: 75px; width: auto;">
                                     </a></li>
                                 <li class=""><a href="blog-details.html">Blog</a>
                                     <ul class="sub-menu">
@@ -202,4 +194,36 @@
             </div>
         </div>
     </div>
+</header>
+
+<!-- Main Header Section -->
+<header class="header-area">
+    <!-- Main Menu -->
+    <div class="main-menu d-none d-lg-block">
+        <nav id="mobile-menu">
+            <!-- Your existing main navigation here -->
+        </nav>
+    </div>
+
+    <!-- Sidenav for Mobile -->
+    <mat-sidenav-container class="sidenav-container d-lg-none">
+        <mat-sidenav #sidenav mode="over">
+            <!-- Side Navigation Links -->
+            <nav>
+                <ul>
+                    <li><a href="/web-home">Home</a></li>
+                    <li><a href="shop.html">Shop</a></li>
+                    <li><a href="blog-details.html">Blog</a></li>
+                    <li><a href="about.html">Pages</a></li>
+                    <li><a href="service.html">Portfolio</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                </ul>
+            </nav>
+        </mat-sidenav>
+        <mat-sidenav-content>
+            <button mat-icon-button (click)="sidenav.toggle()">
+                <mat-icon>menu</mat-icon>
+            </button>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
 </header>
