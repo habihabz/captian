@@ -1,4 +1,4 @@
-export class ProductColor {
+export class ProdColor {
   pc_id: number;
   pc_prod_id: number;
   pc_color: number;

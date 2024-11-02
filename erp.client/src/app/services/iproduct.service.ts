@@ -26,10 +26,10 @@ export class IProductService {
     return this.http.post<DbResult>(this.apiUrl + "/deleteProduct", id); 
   }
 
-  createOrUpdateProduct(Product: Product): Observable<DbResult> {
-    Product.p_cre_date = new Date().toISOString();
-    return this.http.post<DbResult>(this.apiUrl + "/createOrUpdateProduct", Product); 
+  createOrUpdateProduct(formData: FormData): Observable<DbResult> {
+    return this.http.post<DbResult>(this.apiUrl + "/createOrUpdateProduct", formData);
   }
+
   get refreshProducts$() {
     return this.refreshProductsSubject.asObservable();
   }

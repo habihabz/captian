@@ -21,6 +21,10 @@ namespace Erp.Server.Models
         public DbSet<MasterData> MasterDatas { get; set; }
         public DbSet<MasterType> MasterTypes { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Barcode> Barcodes { get; set; }
+        public DbSet<ProdColor> ProdColors { get; set; }
+        public DbSet<ProdSize> ProdSizes { get; set; }
+        public DbSet<ProdAttachment> ProdAttachments { get; set; }
 
 
     }

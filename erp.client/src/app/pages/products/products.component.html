@@ -162,26 +162,27 @@
                     </div>
                     <div class="tab-pane fade" id="colors" role="tabpanel" aria-labelledby="colors-tab">
                         <form #colorsForm="ngForm">
-                            <br />
                             <div class="row">
                                 <div class="col-8">
                                     <div class="form-group">
-                                        <label for="p_name">Name</label>
-                                        <input type="text" id="barcode_input" class="form-control"
-                                            [(ngModel)]="newBarcode" name="barcode" required>
+                                        <label for="newColor">Colors</label>
+                                        <select appSelect2 #newColor id="newColor" class="form-control" name="newColor"
+                                            required (selectionChanged)="onProdColorChange($event);">
+                                            <option  [value]="0">Please Select Color</option>
+                                            <option *ngFor="let c of colors" [value]="c.md_id">{{ c.md_name }}</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <button class="btn btn-warning mt-4" (click)="addBarcode()"><i
-                                            class="fa fa-plus"></i> Add</button>
+                                    <button class="btn btn-warning mt-4" (click)="addProdColor()"><i class="fa fa-plus"></i> Add</button>
                                 </div>
                             </div>
                             <hr />
                             <div class="row">
                                 <div class="col-12">
-                                    <ag-grid-angular #barcodeGrid class="ag-theme-quartz ag-theme-acmecorp"
-                                        style="height: 100%; width: 100%;" [rowData]="barcodes"
-                                        [columnDefs]="barcodeColDefs" [pagination]="pagination"
+                                    <ag-grid-angular #prodColorGrid class="ag-theme-quartz ag-theme-acmecorp"
+                                        style="height: 100%; width: 100%;" [rowData]="prodColors"
+                                        [columnDefs]="prodColorColDefs" [pagination]="pagination"
                                         [defaultColDef]="defaultColDef" [enableCellTextSelection]="true"
                                         [components]="frameworkComponents" [paginationPageSize]="paginationPageSize10"
                                         [domLayout]="domLayout"
@@ -194,7 +195,6 @@
                     </div>
                     <div class="tab-pane fade" id="sizes" role="tabpanel" aria-labelledby="sizes-tab">
                         <form #sizesForm="ngForm">
-                            <br />
                             <div class="row">
                                 <div class="col-8">
                                     <div class="form-group">

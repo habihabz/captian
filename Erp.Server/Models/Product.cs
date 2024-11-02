@@ -53,7 +53,22 @@ namespace Erp.Server.Models
 
         [Display(Name = "Created On")]
         [DataType(DataType.Date)]
-        public DateTime p_cre_date { get; set; } = DateTime.Now;
-    }
+        public DateTime? p_cre_date { get; set; } = DateTime.Now;
 
+        [NotMapped]
+        [Display(Name = "Barcodes")]
+        public string p_barcodes { get; set; } = string.Empty;
+
+        [NotMapped]
+        [Display(Name = "Sizes")]
+        public string p_sizes { get; set; } = string.Empty;
+
+        [NotMapped]
+        [Display(Name = "Colors")]
+        public string p_colors { get; set; } = string.Empty;
+
+        [NotMapped]
+        [Display(Name = "Attachments")]
+        public string p_attachements { get; set; } = string.Empty;
+    }
 }

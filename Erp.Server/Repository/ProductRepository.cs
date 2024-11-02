@@ -14,7 +14,18 @@ namespace Erp.Server.Repository
         {
             db = _db;
         }
+        public Product getProduct(int id)
+        {
+            var _id = new SqlParameter("id", id + "");
+            var product = db.Set<Product>().FromSqlRaw("EXEC dbo.getProduct @id;", _id).ToList().FirstOrDefault() ?? new Product();
+            return product;
+        }
 
+        public List<Product> getProducts()
+        {
+            var products = db.Set<Product>().FromSqlRaw("EXEC dbo.getProducts;").ToList();
+            return products;
+        }
         public DbResult createOrUpdateProduct(Product product)
         {
             // Set parameters for stored procedure
@@ -28,10 +39,16 @@ namespace Erp.Server.Repository
             var p_sub_division = new SqlParameter("p_sub_division", product.p_sub_division);
             var p_active_yn = new SqlParameter("p_active_yn", product.p_active_yn ?? (object)DBNull.Value);
             var p_cre_by = new SqlParameter("p_cre_by", product.p_cre_by ?? (object)DBNull.Value);
+            var p_barcodes = new SqlParameter("p_barcodes", product.p_barcodes ?? (object)DBNull.Value);
+            var p_colors = new SqlParameter("p_colors", product.p_colors ?? (object)DBNull.Value);
+            var p_sizes = new SqlParameter("p_sizes", product.p_sizes ?? (object)DBNull.Value);
+            var p_attachements = new SqlParameter("p_attachements", product.p_attachements ?? (object)DBNull.Value);
 
-            // Call stored procedure and return result
-            var dbresult = db.Set<DbResult>().FromSqlRaw("EXEC dbo.createOrUpdateProduct @p_id, @p_name, @p_short_name, @p_description, @p_category, @p_sub_category, @p_division,@p_sub_division, @p_active_yn, @p_cre_by;",
-                p_id, p_name, p_short_name, p_description, p_category, p_sub_category, p_division, p_sub_division, p_active_yn, p_cre_by)
+            // Call stored procedure with additional parameters
+            var dbresult = db.Set<DbResult>().FromSqlRaw("EXEC dbo.createOrUpdateProduct @p_id, @p_name, @p_short_name, @p_description, @p_category, " +
+                "@p_sub_category, @p_division, @p_sub_division, @p_active_yn, @p_cre_by, @p_barcodes, @p_colors, @p_sizes, @p_attachements;",
+                p_id, p_name, p_short_name, p_description, p_category, p_sub_category, p_division, p_sub_division, p_active_yn, p_cre_by,
+                p_barcodes, p_colors, p_sizes, p_attachements)
                 .ToList()
                 .FirstOrDefault() ?? new DbResult();
 
@@ -45,19 +62,34 @@ namespace Erp.Server.Repository
             return dbresult;
         }
 
-        public Product getProduct(int id)
+        public List<Barcode> getBarcodesOfaProduct(int p_id)
         {
-            var _id = new SqlParameter("id", id + "");
-            var product = db.Set<Product>().FromSqlRaw("EXEC dbo.getProduct @id;", _id).ToList().FirstOrDefault() ?? new Product();
-            return product;
+            var _p_id = new SqlParameter("p_id", p_id + "");
+            var barcodes = db.Set<Barcode>().FromSqlRaw("EXEC dbo.getBarcodesOfaProduct @p_id;", _p_id).ToList();
+            return barcodes;
         }
 
-        public List<Product> getProducts()
+        public List<ProdColor> getColorsOfaProduct(int p_id)
         {
-            var products = db.Set<Product>().FromSqlRaw("EXEC dbo.getProducts;").ToList();
-            return products;
+            var _p_id = new SqlParameter("p_id", p_id + "");
+            var prodColors = db.Set<ProdColor>().FromSqlRaw("EXEC dbo.getColorsOfaProduct @p_id;", _p_id).ToList();
+            return prodColors;
         }
+
+        public List<ProdAttachment> getProdAttachmentsOfaProduct(int p_id)
+        {
+            var _p_id = new SqlParameter("p_id", p_id + "");
+            var prodAttachments = db.Set<ProdAttachment>().FromSqlRaw("EXEC dbo.getProdAttachmentsOfaProduct @p_id;", _p_id).ToList();
+            return prodAttachments;
+        }
+
+        public List<ProdSize> getSizesOfaProduct(int p_id)
+        {
+            var _p_id = new SqlParameter("p_id", p_id + "");
+            var prodSizes = db.Set<ProdSize>().FromSqlRaw("EXEC dbo.getSizesOfaProduct @p_id;", _p_id).ToList();
+            return prodSizes;
+        }
+     
     }
-
 
 }

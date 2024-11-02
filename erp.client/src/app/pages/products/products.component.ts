@@ -19,9 +19,10 @@ import { DbResult } from '../../models/dbresult.model';
 import { MasterData } from '../../models/master.data.model';
 import { RequestParms } from '../../models/requestParms';
 import { ProdSize } from '../../models/prod.size.model';
-import { ProductColor } from '../../models/prod.color.model';
+import { ProdColor } from '../../models/prod.color.model';
 import { Barcode } from '../../models/barcode.model';
 import { ProdAttachement } from '../../models/prod.attachments.model';
+import { environment } from '../../../environments/environment';
 
 
 declare var $: any;
@@ -47,13 +48,14 @@ export class ProductsComponent implements OnInit {
   subcategories: MasterData[] = [];
   divisions: MasterData[] = [];
   subdivisions: MasterData[] = [];
-  sizes:MasterData[]=[];
+  sizes: MasterData[] = [];
+  colors: MasterData[] = [];
   requestParms: RequestParms = new RequestParms();
   newBarcode: string = '';
   prodSize: ProdSize = new ProdSize();
   prodSizes: ProdSize[] = [];
-  prodColor: ProductColor = new ProductColor();
-  prodColors: ProductColor[] = [];
+  prodColor: ProdColor = new ProdColor();
+  prodColors: ProdColor[] = [];
   barcode: Barcode = new Barcode();
   barcodes: Barcode[] = [];
   prodAttachement: ProdAttachement = new ProdAttachement();
@@ -65,6 +67,7 @@ export class ProductsComponent implements OnInit {
   @ViewChild('productsGrid') productsGrid!: AgGridAngular;
   @ViewChild('barcodeGrid') barcodeGrid!: AgGridAngular;
   @ViewChild('prodSizeGrid') prodSizeGrid!: AgGridAngular;
+  @ViewChild('prodColorGrid') prodColorGrid!: AgGridAngular;
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
   @ViewChild('barcodeInput', { static: false }) barcodeInput!: ElementRef;
 
@@ -101,7 +104,7 @@ export class ProductsComponent implements OnInit {
     {
       headerName: 'Details', cellRenderer: 'actionRenderer', cellRendererParams:
       {
-        name: 'Details', action: 'onDetail', cssClass: 'btn btn-warning', icon: 'fa fa-list', onDetails: (data: any) => this.onAction('detail', data)
+        name: 'Details', action: 'detail', cssClass: 'btn btn-warning', icon: 'fa fa-list', onDetails: (data: any) => this.onAction('detail', data)
       },
     },
     {
@@ -143,6 +146,18 @@ export class ProductsComponent implements OnInit {
   ];
 
 
+  prodColorColDefs: ColDef[] = [
+    { headerName: "Id", field: "pc_id" },
+    { headerName: "Color", field: "pc_color_name" },
+    {
+      headerName: 'Delete', cellRenderer: 'actionRenderer', cellRendererParams:
+      {
+        name: 'Delete', action: 'onDeleteProdSize', cssClass: 'btn btn-danger', icon: 'fa fa-trash', onDeleteProdSize: (data: any) => this.onAction('deleteProdSize', data)
+      },
+    },
+  ];
+
+
   frameworkComponents = {
     actionRenderer: ActionRendererComponent
   };
@@ -166,6 +181,7 @@ export class ProductsComponent implements OnInit {
     this.getMasterDatasByType("Division", (data) => { this.divisions = data; });
     this.getMasterDatasByType("SubDivision", (data) => { this.subdivisions = data; });
     this.getMasterDatasByType("ProductSize", (data) => { this.sizes = data; });
+    this.getMasterDatasByType("ProductColor", (data) => { this.colors = data; });
   }
   loadCategories(): void {
     this.icategoryService.getCategories().subscribe(
@@ -207,7 +223,7 @@ export class ProductsComponent implements OnInit {
         break;
       case 'deleteProdSize':
         this.onDeleteProdSize(data);
-      break;
+        break;
       default:
         this.snackBarService.showError("Unknown Action " + action);;
     }
@@ -215,9 +231,31 @@ export class ProductsComponent implements OnInit {
 
 
   onEdit(data: any) {
+    $('#myTab a[href="#details"]').tab('show');
     this.iproductService.getProduct(data.p_id).subscribe(
       (data: Product) => {
         this.product = data;
+        this.barcodes = typeof data.p_barcodes === 'string' ? JSON.parse(data.p_barcodes) : data.p_barcodes;
+        this.barcodeGrid.api.applyTransaction({});
+        this.igridService.resizeGridColumns(this.barcodeGrid.api);
+
+        this.prodColors = typeof data.p_colors === 'string' ? JSON.parse(data.p_colors) : data.p_colors;
+        this.prodColorGrid.api.applyTransaction({});
+        this.igridService.resizeGridColumns(this.prodColorGrid.api);
+
+        this.prodSizes = typeof data.p_sizes === 'string' ? JSON.parse(data.p_sizes) : data.p_sizes;
+        this.prodSizeGrid.api.applyTransaction({});
+        this.igridService.resizeGridColumns(this.prodSizeGrid.api);
+
+        this.prodAttachements = typeof data.p_attachements === 'string' ? JSON.parse(data.p_attachements) : data.p_attachements;
+        this.prodSizeGrid.api.applyTransaction({});
+        this.igridService.resizeGridColumns(this.prodSizeGrid.api);
+
+        this.imagePreviews = this.prodAttachements.map(
+          (x) => `${environment.serverHostAddress}/${x.pa_image_path}`
+        );
+      
+
         this.setSelect2Values();
         $('#productFormModal').modal('show');
       },
@@ -266,7 +304,9 @@ export class ProductsComponent implements OnInit {
   }
 
   openCreateFormModal(): void {
+    this.clear();
     $('#productFormModal').modal('show');
+    $('#myTab a[href="#details"]').tab('show');
   }
 
   onCategoryChange(c_id: any) { this.product.p_category = c_id; }
@@ -276,19 +316,38 @@ export class ProductsComponent implements OnInit {
   onProdSizeChange(ps_id: number) {
     const selectedSize = this.sizes.find(size => size.md_id == ps_id);
     if (selectedSize) {
-      this.prodSize.ps_size = selectedSize.md_id;   
-      this.prodSize.ps_size_name = selectedSize.md_name; 
-    } 
+      this.prodSize.ps_size = selectedSize.md_id;
+      this.prodSize.ps_size_name = selectedSize.md_name;
+    }
+
+  }
+  onProdColorChange(pc_id: number) {
+    const selectedColor = this.colors.find(color => color.md_id == pc_id);
+    if (selectedColor) {
+      this.prodColor.pc_color = selectedColor.md_id;
+      this.prodColor.pc_color_name = selectedColor.md_name;
+    }
 
   }
 
   createOrUpdateProduct() {
-    this.product.p_cre_by = this.currentUser.u_id; // Update property to match Category model
-    this.iproductService.createOrUpdateProduct(this.product).subscribe(
+    const formData = new FormData();
+    this.product.p_cre_by = this.currentUser.u_id;
+    this.product.p_barcodes = JSON.stringify(this.barcodes.map(b => ({ b_bar_code: b.b_bar_code })));
+    this.product.p_sizes = JSON.stringify(this.prodSizes.map(b => ({ ps_size: b.ps_size })));
+    this.product.p_colors = JSON.stringify(this.prodColors.map(b => ({ pc_color: b.pc_color })));
+    this.product.p_attachements = JSON.stringify(this.prodAttachements.map(b => ({ pa_image_path: b.pa_image_path })));
+    formData.append("product", JSON.stringify(this.product));
+    this.selectedFiles.forEach(file => {
+      formData.append('images', file, file.name); // 'images' should match the expected field name in the backend
+    });
+    this.iproductService.createOrUpdateProduct(formData).subscribe(
       (data: DbResult) => {
         this.dbResult = data;
         if (data.message === "Success") {
+          this.clear();
           $('#productFormModal').modal('hide');
+
           this.iproductService.refreshProducts();
           this.snackBarService.showSuccess("Successfully Saved");
         } else {
@@ -296,9 +355,23 @@ export class ProductsComponent implements OnInit {
         }
       },
       (error: any) => {
+        this.snackBarService.showError("Error occurred while saving the product.");
       }
     );
   }
+  clear(){
+
+    this.product=new Product();
+    this.barcodes=[];
+    this.prodSizes=[];
+    this.prodColors=[];
+    this.prodAttachements=[];
+    this.imagePreviews=[];
+    this.selectedFiles=[];
+    $("#newSize").val(0).trigger('change');
+    $("#newColor").val(0).trigger('change');
+  }
+
   setSelect2Values() {
     $("#p_category").val(this.product.p_category).trigger('change');
     $("#p_sub_category").val(this.product.p_sub_category).trigger('change');
@@ -327,9 +400,9 @@ export class ProductsComponent implements OnInit {
       this.snackBarService.showError("Please Select Barcode");
     }
   }
-  
+
   onDeleteBarcode(data: any) {
-    
+
     this.barcodes = this.barcodes.filter(barcode => barcode.b_id !== data.b_id);
     this.barcodeGrid.api.applyTransaction({ remove: [{ b_id: data.b_id }] });
     this.snackBarService.showSuccess("Barcode successfully Removed");
@@ -352,13 +425,40 @@ export class ProductsComponent implements OnInit {
       this.snackBarService.showError("Please Select A Size");
     }
   }
-  
-  
-  onDeleteProdSize(data:any){
+
+
+  onDeleteProdSize(data: any) {
     this.prodSizes = this.prodSizes.filter(prodSize => prodSize.ps_id !== data.ps_id);
     this.prodSizeGrid.api.applyTransaction({ remove: [{ ps_id: data.ps_id }] });
     this.snackBarService.showSuccess("Size successfully removed");
   }
+
+  addProdColor() {
+    if (this.prodColor.pc_color != 0) {
+      const isDuplicate = this.prodColors.some(prodColor => prodColor.pc_color === this.prodColor.pc_color);
+      if (isDuplicate) {
+        this.snackBarService.showError("This Color is already added.");
+        return;
+      }
+      this.prodColor.pc_id = this.prodColors.length + 1;
+      this.prodColors.push(this.prodColor);
+      this.prodColorGrid.api.applyTransaction({ add: [this.prodColor] });
+      this.igridService.resizeGridColumns(this.prodColorGrid.api);
+      this.snackBarService.showSuccess("Successfully Added");
+      this.prodColor = new ProdColor();
+    } else {
+      this.snackBarService.showError("Please Select A Color");
+    }
+  }
+
+
+  onDeleteProdColor(data: any) {
+    this.prodColors = this.prodColors.filter(prodColor => prodColor.pc_color !== data.pc_color);
+    this.prodColorGrid.api.applyTransaction({ remove: [{ pc_color: data.pc_color }] });
+    this.snackBarService.showSuccess("Color successfully removed");
+  }
+
+
 
   uploadImages() {
 
@@ -383,5 +483,5 @@ export class ProductsComponent implements OnInit {
     this.imagePreviews.splice(index, 1);
     this.selectedFiles.splice(index, 1);
   }
-  
+
 }

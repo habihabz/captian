@@ -15,6 +15,11 @@ export class Product {
   p_cre_by: number;
   p_cre_by_name: string;
   p_cre_date: string;
+  p_barcodes:string;
+  p_sizes:string;
+  p_colors:string;
+  p_attachements:string;
+  
   constructor() {
     this.p_id = 0;
     this.p_name='',
@@ -32,6 +37,10 @@ export class Product {
     this.p_cre_by = 0;
     this.p_cre_by_name = '';
     this.p_cre_date = '';
+    this.p_barcodes='';
+    this.p_sizes='';
+    this.p_colors='';
+    this.p_attachements='';
   }
 
 }
