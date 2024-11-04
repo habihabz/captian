@@ -102,12 +102,6 @@ export class ProductsComponent implements OnInit {
     { headerName: "Division", field: "p_division_name" },
     { headerName: "Sub Division", field: "p_sub_division_name" },
     {
-      headerName: 'Details', cellRenderer: 'actionRenderer', cellRendererParams:
-      {
-        name: 'Details', action: 'detail', cssClass: 'btn btn-warning', icon: 'fa fa-list', onDetails: (data: any) => this.onAction('detail', data)
-      },
-    },
-    {
       headerName: 'Edit', cellRenderer: 'actionRenderer', cellRendererParams:
       {
         name: 'Edit', action: 'onEdit', cssClass: 'btn btn-info', icon: 'fa fa-edit', onEdit: (data: any) => this.onAction('edit', data)
@@ -152,7 +146,7 @@ export class ProductsComponent implements OnInit {
     {
       headerName: 'Delete', cellRenderer: 'actionRenderer', cellRendererParams:
       {
-        name: 'Delete', action: 'onDeleteProdSize', cssClass: 'btn btn-danger', icon: 'fa fa-trash', onDeleteProdSize: (data: any) => this.onAction('deleteProdSize', data)
+        name: 'Delete', action: 'onDeleteProdColor', cssClass: 'btn btn-danger', icon: 'fa fa-trash', onDeleteProdColor: (data: any) => this.onAction('deleteProdColor', data)
       },
     },
   ];
@@ -224,6 +218,9 @@ export class ProductsComponent implements OnInit {
       case 'deleteProdSize':
         this.onDeleteProdSize(data);
         break;
+      case 'deleteProdColor':
+        this.onDeleteProdColor(data);
+      break;
       default:
         this.snackBarService.showError("Unknown Action " + action);;
     }
@@ -235,35 +232,42 @@ export class ProductsComponent implements OnInit {
     this.iproductService.getProduct(data.p_id).subscribe(
       (data: Product) => {
         this.product = data;
-        this.barcodes = typeof data.p_barcodes === 'string' ? JSON.parse(data.p_barcodes) : data.p_barcodes;
-        this.barcodeGrid.api.applyTransaction({});
-        this.igridService.resizeGridColumns(this.barcodeGrid.api);
 
-        this.prodColors = typeof data.p_colors === 'string' ? JSON.parse(data.p_colors) : data.p_colors;
-        this.prodColorGrid.api.applyTransaction({});
-        this.igridService.resizeGridColumns(this.prodColorGrid.api);
+        this.barcodes = this.parseJSON(data.p_barcodes);
+        this.prodColors = this.parseJSON(data.p_colors);
+        this.prodSizes = this.parseJSON(data.p_sizes);
+        this.prodAttachements = this.parseJSON(data.p_attachements);
 
-        this.prodSizes = typeof data.p_sizes === 'string' ? JSON.parse(data.p_sizes) : data.p_sizes;
-        this.prodSizeGrid.api.applyTransaction({});
-        this.igridService.resizeGridColumns(this.prodSizeGrid.api);
+       
+          this.updateGrid(this.barcodeGrid, this.barcodes);
+          this.updateGrid(this.prodColorGrid, this.prodColors);
+          this.updateGrid(this.prodSizeGrid, this.prodSizes);
 
-        this.prodAttachements = typeof data.p_attachements === 'string' ? JSON.parse(data.p_attachements) : data.p_attachements;
-        this.prodSizeGrid.api.applyTransaction({});
-        this.igridService.resizeGridColumns(this.prodSizeGrid.api);
-
-        this.imagePreviews = this.prodAttachements.map(
-          (x) => `${environment.serverHostAddress}/${x.pa_image_path}`
-        );
-      
-
-        this.setSelect2Values();
-        $('#productFormModal').modal('show');
+          this.imagePreviews = this.prodAttachements.map(
+            (x) => `${environment.serverHostAddress}/${x.pa_image_path}`
+          );
+          this.setSelect2Values();
+          $('#productFormModal').modal('show');
+        
+        
       },
       (error: any) => {
-        console.error('Error fetching income', error);
+        console.error('Error fetching product', error);
       }
     );
   }
+
+  // Helper to parse JSON fields safely
+  private parseJSON(value: any): any {
+    return typeof value === 'string' ? JSON.parse(value) : value;
+  }
+
+  // Helper to update grid data and resize columns
+  private updateGrid(grid: any, data: any) {
+    grid.api.applyTransaction({ data });
+    this.igridService.resizeGridColumns(grid.api);
+  }
+
 
   onDelete(data: any) {
     this.iproductService.deleteProduct(data.p_id).subscribe(
@@ -359,15 +363,15 @@ export class ProductsComponent implements OnInit {
       }
     );
   }
-  clear(){
+  clear() {
 
-    this.product=new Product();
-    this.barcodes=[];
-    this.prodSizes=[];
-    this.prodColors=[];
-    this.prodAttachements=[];
-    this.imagePreviews=[];
-    this.selectedFiles=[];
+    this.product = new Product();
+    this.barcodes = [];
+    this.prodSizes = [];
+    this.prodColors = [];
+    this.prodAttachements = [];
+    this.imagePreviews = [];
+    this.selectedFiles = [];
     $("#newSize").val(0).trigger('change');
     $("#newColor").val(0).trigger('change');
   }
@@ -453,6 +457,7 @@ export class ProductsComponent implements OnInit {
 
 
   onDeleteProdColor(data: any) {
+    
     this.prodColors = this.prodColors.filter(prodColor => prodColor.pc_color !== data.pc_color);
     this.prodColorGrid.api.applyTransaction({ remove: [{ pc_color: data.pc_color }] });
     this.snackBarService.showSuccess("Color successfully removed");

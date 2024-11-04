@@ -29,5 +29,4 @@ namespace Erp.Server.Models
         public DateTime? pa_cre_date { get; set; } = DateTime.Now;
     }
 
-
 }

@@ -7,26 +7,22 @@ import { GridApi } from 'ag-grid-community'; // Only import GridApi
 export class GridService {
   resizeGridColumns(gridApi: GridApi): void {
     const screenWidth = window.innerWidth;
-
-    // Get the total width of all visible columns
     const allDisplayedColumns = gridApi.getAllDisplayedColumns();
     let totalColumnWidth = 0;
 
     if (allDisplayedColumns) {
       allDisplayedColumns.forEach((col) => {
-        totalColumnWidth += gridApi.getColumnState().find((c) => c.colId === col.getColId())?.width || 0;
+        const colState = gridApi.getColumnState().find((c) => c.colId === col.getColId());
+        totalColumnWidth += colState?.width || 0;
       });
     }
-
-    // Get the width of the grid container
-    const gridContainer = document.querySelector('.ag-root'); // Modify the selector if needed
+    const gridContainer = document.querySelector('.ag-root'); 
     const gridContainerWidth = gridContainer ? gridContainer.clientWidth : 0;
 
-    // Resize columns only if content overflows or screen is smaller
     if (screenWidth < 2000 || totalColumnWidth > gridContainerWidth) {
-      gridApi.sizeColumnsToFit(); // Fit columns to the grid width
+      gridApi.sizeColumnsToFit();
     } else {
-      gridApi.sizeColumnsToFit(); // Auto size columns based on content
+      gridApi.autoSizeAllColumns();
     }
   }
 }

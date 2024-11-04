@@ -67,7 +67,7 @@ namespace Erp.Server.Models
         [Display(Name = "Colors")]
         public string p_colors { get; set; } = string.Empty;
 
-        [NotMapped]
+        
         [Display(Name = "Attachments")]
         public string p_attachements { get; set; } = string.Empty;
     }

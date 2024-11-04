@@ -158,3 +158,8 @@ table.jambo_table thead {
   width: 24px;
   height: 24px;
 }
+
+
+.mdc-tab-indicator {
+  display: none;
+}

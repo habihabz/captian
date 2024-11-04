@@ -36,15 +36,9 @@
                 <div class="company__info wow fadeInUp " data-wow-duration=".8s" data-wow-delay=".5s">
                     <h3 class="f-title">Popular categories</h3>
                     <ul>
-                        <li><a href="shop.html">Sneaker</a></li>
-                        <li><a href="shop.html">Clothing & Stools</a></li>
-                        <li><a href="shop.html">Helmet for Women’s</a></li>
-                        <li><a href="shop.html">Basketball</a></li>
-                        <li><a href="shop.html">Mens Running</a></li>
-                        <li><a href="shop.html">Footwear</a></li>
-                        <li><a href="shop.html">Outerwears</a></li>
-                        <li><a href="shop.html">Men’s</a></li>
-                        <li><a href="shop.html">Kids & Young</a></li>
+                        <li *ngFor="let category of categories">
+                            <a href="category">{{category.ct_name}}</a>
+                        </li>
                     </ul>
                 </div>
             </div>
