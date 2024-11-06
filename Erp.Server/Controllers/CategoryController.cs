@@ -22,7 +22,7 @@ namespace Erp.Server.Controllers
         }
 
         [HttpPost("getCategories")]
-        [Authorize]
+        
         public List<Category> getCategories()
         {
             List<Category> categories = new List<Category>();

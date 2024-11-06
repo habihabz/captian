@@ -50,8 +50,7 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="slider_images">
-                            <img class="back" src="./assets/img/slider/2.png" alt=""
-                                style="height: 90vh; width: auto;">>
+                            <img class="back" src="./assets/img/slider/2.png" alt="" style="height: 90vh; width: auto;">
                             <img class="top" src="./assets/img/slider/text.png" alt="">
                         </div>
                     </div>
@@ -97,13 +96,14 @@
                 Gear up for success with the best from our collection.</p>
         </div>
         <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="center">
-            <mat-tab label="Shoes">
+            <!--<mat-tab label="Shoes">
                 <br />
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="product">
                                 <div class="product__thumb">
+                                    
                                     <a href="single-product">
                                         <img class="product-primary" src="./assets/img/product/3.jpg"
                                             alt="product_image" style="height: 150px; width: auto;">
@@ -152,27 +152,29 @@
 
                     </div>
                 </div>
-            </mat-tab>
+            </mat-tab> -->
             <mat-tab *ngFor="let category of categories" [label]="category.ct_name">
-                <br />
                 <div class="container-fluid">
                     <div class="row">
-                        <div *ngFor="let product of getProductsByCategory(category).slice(0, 4)"
-                            class="col-lg-3 col-md-3 col-sm-12">
+                        <div *ngFor="let product of getProductsByCategory(category.ct_id)"
+                            class="col-lg-4 col-md-4 col-sm-12">
                             <div class="product">
                                 <div class="product__thumb">
                                     <a href="single-product">
-                                        <img class="product-primary" src="./assets/img/product/3.jpg"
-                                            alt="product_image" style="height: 150px; width: auto;">
-                                        <img class="product-secondary" src="./assets/img/product/3-2.jpg"
-                                            alt="product_image" style="height: 150px; width: auto;">
+                                       
+                                        <img *ngFor="let p_attachement of getAttachementOfaProduct(product.p_attachements).slice(0, 2); let i = index"
+                                            [ngClass]="i === 0 ? 'product-primary' : 'product-secondary'"
+                                            [src]="apiUrl + '/' + p_attachement.pa_image_path" alt="product_image"
+                                            style="height: 300px; width: auto;">
+
                                     </a>
-                                    <div class="product__update">
-                                        <a class="#">new</a>
-                                    </div>
+                                    <!--<div class="product__update">
+                            <a class="#">new</a>
+                          </div>-->
                                     <div class="product-info mb-10">
                                         <div class="product_category">
-                                            <span>{{product.p_sub_category_name}}, {{product.p_division_name}}</span>
+                                            <span>{{ product.p_sub_category_name + ', ' + product.p_division_name
+                                                }}</span>
                                         </div>
                                         <div class="product_rating">
                                             <a href="#"><i class="fa fa-star start-color"></i></a>
@@ -294,30 +296,7 @@
         </div>
     </div>
 </div>
-<div class="blog-area mb-50">
-    <div class="">
-        <div class="gallary_area">
-            <div class="gallary__thumb">
-                <a href="shop.html"><img src="./assets/img/gallary/gallary6.jpg" alt="gallaryImage" loading="lazy"></a>
-            </div>
-            <div class="gallary__thumb">
-                <a href="shop.html"><img src="./assets/img/gallary/gallary1.jpg" alt="gallaryImage" loading="lazy"></a>
-            </div>
-            <div class="gallary__thumb">
-                <a href="shop.html"><img src="./assets/img/gallary/gallary2.jpg" alt="gallaryImage" loading="lazy"></a>
-            </div>
-            <div class="gallary__thumb">
-                <a href="shop.html"><img src="./assets/img/gallary/gallary3.jpg" alt="gallaryImage" loading="lazy"></a>
-            </div>
-            <div class="gallary__thumb">
-                <a href="shop.html"><img src="./assets/img/gallary/gallary4.jpg" alt="gallaryImage" loading="lazy"></a>
-            </div>
-            <div class="gallary__thumb">
-                <a href="shop.html"><img src="./assets/img/gallary/gallary5.jpg" alt="gallaryImage" loading="lazy"></a>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <!-- popup area start -->
 <div class="overlay"></div>

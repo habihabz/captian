@@ -25,7 +25,6 @@ namespace Erp.Server.Controllers
 
         }
         [HttpPost("getMasterDatas")]
-        [Authorize]
         public List<MasterData> getMasterDatas()
         {
             List<MasterData> masterdatas =new List<MasterData>();

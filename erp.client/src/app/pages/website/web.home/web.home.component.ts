@@ -9,6 +9,7 @@ import { MasterData } from '../../../models/master.data.model';
 import { RequestParms } from '../../../models/requestParms';
 import { Subscription } from 'rxjs';
 import { ProdAttachement } from '../../../models/prod.attachments.model';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-web.home',
@@ -16,13 +17,16 @@ import { ProdAttachement } from '../../../models/prod.attachments.model';
   styleUrl: './web.home.component.css'
 })
 export class WebHomeComponent   implements OnInit{
+  apiUrl = `${environment.serverHostAddress}`;
   product:Product=new Product();
   products:Product []=[];
+  tempProducts:Product []=[];
   categories: Category[] = [];
   subcategories: MasterData[] = [];
   requestParms: RequestParms = new RequestParms();
   subscription: Subscription = new Subscription();
-  
+  attachments:ProdAttachement[]=[];
+  attachment:ProdAttachement=new ProdAttachement();
   constructor(
     private elRef: ElementRef,
     private router: Router,
@@ -35,15 +39,8 @@ export class WebHomeComponent   implements OnInit{
 
   
   ngOnInit(): void {
-    this.getProducts();
     this.loadCategories();
-    this.subscription.add(
-      this.iproductService.refreshProducts$.subscribe(() => {
-        this.getProducts();
-      })
-
-    );
-
+    this.getProducts();
     this.getMasterDatasByType("SubCategory", (data) => { this.subcategories = data; });
  
   }
@@ -80,42 +77,13 @@ export class WebHomeComponent   implements OnInit{
       }
     );
   }
-  displayedColumns: string[] = ['product', 'description', 'price', 'action'];
 
-  // Define the products for each category
-  category1Products = [
-    { name: 'Running Shoes', description: 'High-performance running shoes.', price: 99.99 },
-    { name: 'Basketball', description: 'Durable and lightweight basketball.', price: 29.99 }
-  ];
-
-  category2Products = [
-    { name: 'Yoga Mat', description: 'Comfortable yoga mat for your practice.', price: 19.99 },
-    { name: 'Soccer Ball', description: 'High-quality soccer ball for training.', price: 34.99 }
-  ];
-
-  category3Products = [
-    { name: 'Sports Watch', description: 'Stylish sports watch with heart rate monitor.', price: 149.99 },
-    { name: 'Water Bottle', description: 'Insulated water bottle for athletes.', price: 19.99 }
-  ];
-
-  getProductsByCategory(category: Category) {
-    return this.products.filter(product => product.p_category === category.ct_id);
+  getProductsByCategory(c_id: number) {
+   this.tempProducts=this.products.filter(x=>x.p_category==c_id);
+   return this.tempProducts;
   }
-  getProductAttachments(product:Product){
-    try {
-      return JSON.parse(product.p_attachements) as ProdAttachement[];
-    } catch (error) {
-      console.error('Error parsing attachments JSON:', error);
-      return [];
-    }
-  }
-  parseAttachments(attachmentsJson: string): ProdAttachement[] {
-    try {
-      return JSON.parse(attachmentsJson) as ProdAttachement[];
-    } catch (error) {
-      console.error('Error parsing attachments JSON:', error);
-      return [];
-    }
-  }
+  getAttachementOfaProduct(p_attachements:string){
 
+    return JSON.parse(p_attachements);
+  }
 }

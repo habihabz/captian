@@ -59,11 +59,11 @@ namespace Erp.Server.Models
         [Display(Name = "Barcodes")]
         public string p_barcodes { get; set; } = string.Empty;
 
-        [NotMapped]
+       
         [Display(Name = "Sizes")]
         public string p_sizes { get; set; } = string.Empty;
 
-        [NotMapped]
+ 
         [Display(Name = "Colors")]
         public string p_colors { get; set; } = string.Empty;
 
